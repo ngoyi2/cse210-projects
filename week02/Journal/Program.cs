@@ -8,6 +8,7 @@
 // so a user can choose to write a new entry, display the journal, save the journal to a file, load the journal from a file, or exit the program.
 // we creeted a journal and renitialised its proprierity.
 
+// <my link is : https://github.com/ngoyi2/cse210-projects/tree/main/week02/Journal >
 
 using System;
 using System.Collections.Generic; // Not strictly needed here, but common
