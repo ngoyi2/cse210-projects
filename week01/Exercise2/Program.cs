@@ -45,6 +45,7 @@ class Program
         if (result >= 70)
         {
             Console.Write($"your grade is {letter}, \n {message}");
+            Console.Write("bye bye");
 
         }
 
