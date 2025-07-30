@@ -1,3 +1,9 @@
 using System;
 
-public class 
+public class Personne
+{
+    public void Identity()
+    {
+        Console.WriteLine("je suis plus grand que ca");
+    }
+}

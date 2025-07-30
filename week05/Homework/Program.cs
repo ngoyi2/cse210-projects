@@ -1,9 +1,6 @@
 using System;
 
-class Program
+public class Personne
 {
-    static void Main(string[] args)
-    {
-        Console.WriteLine("Hello World! This is the Homework Project.");
-    }
+    
 }
