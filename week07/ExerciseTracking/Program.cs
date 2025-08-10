@@ -1,74 +1,138 @@
-// Ngoy A Ngoy 
+// Ngoy Augustin Ngoy. 
 using System;
+using System.Collections.Generic;
 
-public class SwimmingActivity
+
+public abstract class Activity
 {
-       // Properties to store the input data
-       public int Laps { get; set; }
-       public double Minutes { get; set; }
+       private string _date;
+       private double _minutes;
 
-       // Methods to perform all the calculations
-       public double CalculateDistanceKm()
+       public Activity(string date, double minutes)
        {
-              return (double)Laps * 50 / 1000;
+              _date = date;
+              _minutes = minutes;
        }
 
-       public double CalculateDistanceMiles()
+       public double GetMinutes()
        {
-              return (double)Laps * 50 / 1000 * 0.62;
+              return _minutes;
        }
 
-       public double CalculateSpeedKph()
-       {
-              double distanceKm = CalculateDistanceKm();
-              if (Minutes == 0) return 0;
-              return (distanceKm / Minutes) * 60;
-       }
+       public abstract double GetDistance();
+       public abstract double GetSpeed();
+       public abstract double GetPace();
 
-       public double CalculateSpeedMph()
+       public virtual string GetSummary()
        {
-              double distanceMiles = CalculateDistanceMiles();
-              if (Minutes == 0) return 0;
-              return (distanceMiles / Minutes) * 60;
-       }
-
-       public double CalculatePaceMinPerKm()
-       {
-              double distanceKm = CalculateDistanceKm();
-              if (distanceKm == 0) return 0;
-              return Minutes / distanceKm;
-       }
-
-       public double CalculatePaceMinPerMile()
-       {
-              double distanceMiles = CalculateDistanceMiles();
-              if (distanceMiles == 0) return 0;
-              return Minutes / distanceMiles;
+              return $"{_date} {this.GetType().Name} ({_minutes:F2} min): " +
+                     $"Distance {GetDistance():F2} km, " +
+                     $"Speed: {GetSpeed():F2} kph, " +
+                     $"Pace: {GetPace():F2} min per km";
        }
 }
+
+
+public class Running : Activity
+{
+       private double _distance; // in kilometers
+
+       public Running(string date, double minutes, double distance) : base(date, minutes)
+       {
+              _distance = distance;
+       }
+
+       public override double GetDistance()
+       {
+              return _distance;
+       }
+
+       public override double GetSpeed()
+       {
+              if (GetMinutes() == 0) return 0;
+              return (GetDistance() / GetMinutes()) * 60;
+       }
+
+       public override double GetPace()
+       {
+              if (GetDistance() == 0) return 0;
+              return GetMinutes() / GetDistance();
+       }
+}
+
+
+public class Cycling : Activity
+{
+       private double _speed; // in kph
+
+       public Cycling(string date, double minutes, double speed) : base(date, minutes)
+       {
+              _speed = speed;
+       }
+
+       public override double GetDistance()
+       {
+              return (GetSpeed() * GetMinutes()) / 60;
+       }
+
+       public override double GetSpeed()
+       {
+              return _speed;
+       }
+
+       public override double GetPace()
+       {
+              if (GetDistance() == 0) return 0;
+              return GetMinutes() / GetDistance();
+       }
+}
+
+
+
+public class Swimming : Activity
+{
+       private int _laps;
+
+       public Swimming(string date, double minutes, int laps) : base(date, minutes)
+       {
+              _laps = laps;
+       }
+
+       public override double GetDistance()
+       {
+              return (double)_laps * 50 / 1000;
+       }
+
+       public override double GetSpeed()
+       {
+              if (GetMinutes() == 0) return 0;
+              return (GetDistance() / GetMinutes()) * 60;
+       }
+
+       public override double GetPace()
+       {
+              if (GetDistance() == 0) return 0;
+              return GetMinutes() / GetDistance();
+       }
+}
+
+
+
+//using System;
 
 public class Program
 {
        public static void Main(string[] args)
        {
-              // Creating an instance of the SwimmingActivity class
-              SwimmingActivity activity = new SwimmingActivity();
+              List<Activity> activities = new List<Activity>();
 
-              // Setting the input values
-              activity.Laps = 100;
-              activity.Minutes = 30;
+              activities.Add(new Running("03 Nov 2022", 30, 4.8));
+              activities.Add(new Cycling("04 Nov 2022", 45, 20.0));
+              activities.Add(new Swimming("05 Nov 2022", 30, 40));
 
-              // Displaying the inputs
-              Console.WriteLine($"Number of swimming laps : {activity.Laps}");
-              Console.WriteLine($"Session duration (minutes) : {activity.Minutes}");
-              Console.WriteLine("---------------------------------------------");
-
-              // Calculating and displaying the results
-              Console.WriteLine($"Distance (km) : {activity.CalculateDistanceKm():F2}");
-              Console.WriteLine($"Distance (miles) : {activity.CalculateDistanceMiles():F2}");
-              Console.WriteLine($"Speed (kph) : {activity.CalculateSpeedKph():F2}");
-              Console.WriteLine($"Speed (mph) : {activity.CalculateSpeedMph():F2}");
-              Console.WriteLine($"Pace (min/km) : {activity.CalculatePaceMinPerKm():F2}");
-              Console.WriteLine($"Pace (min/mile) : {activity.CalculatePaceMinPerMile():F2}");
+              foreach (Activity activity in activities)
+              {
+                     Console.WriteLine(activity.GetSummary());
+              }
        }
 }
